@@ -17,7 +17,3 @@ async_engine = create_async_engine(
     url=settings.DATABASE_URL_asyncpg,
     echo=True,
 )
-
-with sync_engine.connect() as conn:
-    res = conn.execute(text("SELECT VERSION()"))
-    print(f"{res.first()=}")
