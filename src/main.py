@@ -8,4 +8,4 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 
 create_tables()
-asyncio.run(insert_data())
+# asyncio.run(insert_data())
