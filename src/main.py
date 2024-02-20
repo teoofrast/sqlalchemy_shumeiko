@@ -13,5 +13,4 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 # SyncCore.update_worker()
 
 
-SyncOrm.select_workers()
-SyncOrm.update_workers()
+SyncOrm.insert_resumes()

@@ -1,6 +1,6 @@
-from sqlalchemy import text, insert, select, update, delete
+from sqlalchemy import text, insert, select, update, delete, func, cast
 from src.database import sync_engine, async_engine, session_factory, async_session_factory, Base
-from src.models import WorkersOrm
+from src.models import WorkersOrm, ResumesOrm, Workload
 
 
 class SyncOrm:
@@ -36,5 +36,31 @@ class SyncOrm:
         with session_factory()as session:
             worker_michael = session.get(WorkersOrm, worker_id)
             worker_michael.username = new_username
-            session.expire.all ()
+            session.expire.all()
             session.commit()
+
+    @staticmethod
+    def insert_resumes():
+        with session_factory() as session:
+            resume_jack_1 = ResumesOrm(
+                title="Python Junior Developer", compensation=50000, workload=Workload.fulltime, worker_id=1)
+            resume_jack_2 = ResumesOrm(
+                title="Python Разработчик", compensation=150000, workload=Workload.fulltime, worker_id=1)
+            resume_michael_1 = ResumesOrm(
+                title="Python Data Engineer", compensation=250000, workload=Workload.parttime, worker_id=2)
+            resume_michael_2 = ResumesOrm(
+                title="Data Scientist", compensation=300000, workload=Workload.fulltime, worker_id=2)
+            session.add_all([resume_jack_1, resume_jack_2,
+                             resume_michael_1, resume_michael_2])
+            session.commit()
+
+    @staticmethod
+    def select_resumes_avg_compensation():
+        with session_factory() as session:
+            query = (
+                select(
+                    ResumesOrm.workload,
+                    ResumesOrm.compensation,
+                    func.avg(ResumesOrm.compensation)
+                )
+            )
