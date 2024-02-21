@@ -8,5 +8,6 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 SyncOrm.create_tables()
 
+
 SyncOrm.insert_workers()
 SyncOrm.insert_resumes()
