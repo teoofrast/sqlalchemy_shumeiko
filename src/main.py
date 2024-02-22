@@ -13,4 +13,4 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 # SyncCore.update_worker()
 
 
-SyncOrm.select_resumes_avg_compensation()
+SyncOrm.insert_resumes()
