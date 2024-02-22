@@ -1,4 +1,4 @@
-from sqlalchemy import text, insert, select, update, delete, func, cast
+from sqlalchemy import text, insert, select, update, delete, func, cast, Integer, and_
 from src.database import sync_engine, async_engine, session_factory, async_session_factory, Base
 from src.models import WorkersOrm, ResumesOrm, Workload
 
@@ -55,12 +55,23 @@ class SyncOrm:
             session.commit()
 
     @staticmethod
-    def select_resumes_avg_compensation():
+    def select_resumes_avg_compensation(like_language: str = "Python"):
         with session_factory() as session:
             query = (
                 select(
                     ResumesOrm.workload,
-                    ResumesOrm.compensation,
-                    func.avg(ResumesOrm.compensation)
+                    cast(func.avg(ResumesOrm.compensation), Integer).label("avg_compensation"),
                 )
+                .select_from(ResumesOrm)
+                .filter(and_(
+                    ResumesOrm.title.contains(like_language),
+                    ResumesOrm.compensation > 40000,
+                ))
+                .group_by(ResumesOrm.workload)
+                .having(cast(func.avg(ResumesOrm.compensation), Integer) > 70000)
             )
+
+        print(query.compile(compile_kwargs={"literal_binds": True}))
+        res = session.execute(query)
+        result = res.all()
+        print(result[0].avg_compensation)
